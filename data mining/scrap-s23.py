@@ -15,18 +15,22 @@ def launchBrowser():
     options = webdriver.ChromeOptions()
     driver = webdriver.Chrome(service=service, options=options)
 
-    driver.get("https://www.mercadolibre.com.ar/samsung-galaxy-s23-ultra-12gb-256gb-color-cream/p/MLA21394678?pdp_filters=category:MLA1055#searchVariation=MLA21394678&position=1&search_layout=stack&type=product&tracking_id=e1d71c77-b617-4f4e-bf06-6cbbb2b14d52")
+    driver.get("https://www.amazon.com/-/es/Tel%C3%A9fono-inteligente-desbloqueado-almacenamiento-estadounidense/dp/B0BLP2B5DZ?th=1")
     time.sleep(2)
     action = ActionChains(driver)
     action.send_keys(Keys.ENTER).perform()
 
-    #driver.implicitly_wait(10)
+    driver.implicitly_wait(10)
 
     return driver
 
 driver = launchBrowser()
+driver.maximize_window()
 
-div_element = driver.find_elements(By.CLASS_NAME, "ui-review-capability-comments__comment__content")
+see_more_button = driver.find_element(By.XPATH, '//*[@id="reviews-medley-footer"]/div[2]/a')
+see_more_button.click()
+
+div_element = driver.find_elements(By.CLASS_NAME, "cr-original-review-content")
 
 all_comments = ""
 
@@ -34,7 +38,7 @@ for i in div_element:
     contenido = i.text
     all_comments = all_comments + str(contenido) + os.linesep
 
-print(all_comments)
+#print(all_comments)
 
 with open(CUR_DIR/"datoscomments.txt", "w", encoding='utf-8') as file:
     file.write(all_comments)
