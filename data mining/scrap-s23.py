@@ -4,7 +4,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.service import Service
 
+from pathlib import Path
+CUR_DIR = Path(__file__).resolve().parent
+
 import time
+import os
 
 def launchBrowser():
     service = Service(executable_path='./chromedriver.exe')
@@ -16,7 +20,21 @@ def launchBrowser():
     action = ActionChains(driver)
     action.send_keys(Keys.ENTER).perform()
 
-    while(True):
-       pass
+    #driver.implicitly_wait(10)
 
-launchBrowser()
+    return driver
+
+driver = launchBrowser()
+
+div_element = driver.find_elements(By.CLASS_NAME, "ui-review-capability-comments__comment__content")
+
+all_comments = ""
+
+for i in div_element:
+    contenido = i.text
+    all_comments = all_comments + str(contenido) + os.linesep
+
+print(all_comments)
+
+with open(CUR_DIR/"datoscomments.txt", "w", encoding='utf-8') as file:
+    file.write(all_comments)
